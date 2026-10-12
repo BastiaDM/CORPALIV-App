@@ -21,7 +21,7 @@ class MainActivity : ComponentActivity() {
             CORPALIVAppTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Greeting(
-                        name = "Android",
+                        name = "Bastian",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
