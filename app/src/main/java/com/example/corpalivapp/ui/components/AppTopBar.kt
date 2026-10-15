@@ -7,6 +7,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,7 +22,7 @@ fun AppTopBar(
             TextButton(
                 onClick = onMenuClick
             ) {
-                Text("MENU",color=Color.White)
+                Text("MENU",color=Color.White, fontWeight = FontWeight.Bold, fontStyle = FontStyle.Italic)
             }
         },
         title = {

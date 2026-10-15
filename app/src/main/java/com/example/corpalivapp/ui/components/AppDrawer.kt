@@ -59,33 +59,21 @@ fun AppDrawer(
                         }
                     }
                 )
-
-                NavigationDrawerItem(
-                    label = { Text("Gallery") },
-                    selected = pantallaActual == "Gallery",
-                    onClick = {
-                        onPantallaSeleccionada("Gallery")
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    }
-                )
-
-                NavigationDrawerItem(
-                    label = { Text("Slideshow") },
-                    selected = pantallaActual == "Slideshow",
-                    onClick = {
-                        onPantallaSeleccionada("Slideshow")
-                        scope.launch {
-                            drawerState.close()
-                        }
-                    }
-                )
                 NavigationDrawerItem(
                     label = { Text("Historias") },
                     selected = pantallaActual == "Historias",
                     onClick = {
                         onPantallaSeleccionada("Historias")
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Programas") },
+                    selected = pantallaActual == "Programas",
+                    onClick = {
+                        onPantallaSeleccionada("Programas")
                         scope.launch {
                             drawerState.close()
                         }

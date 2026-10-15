@@ -14,6 +14,7 @@ import com.example.corpalivapp.ui.components.AppDrawer
 import com.example.corpalivapp.ui.components.AppTopBar
 import com.example.corpalivapp.ui.screens.HomeScreen
 import com.example.corpalivapp.ui.screens.HistoriasScreen
+import com.example.corpalivapp.ui.screens.ProgramasScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +46,11 @@ fun App() {
                 }
                 "Historias" -> {
                     HistoriasScreen(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+                "Programas" -> {
+                    ProgramasScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

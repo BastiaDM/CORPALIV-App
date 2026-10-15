@@ -2,6 +2,8 @@ package com.example.corpalivapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.res.painterResource
@@ -9,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.*
 import androidx.compose.ui.text.font.FontWeight
@@ -23,12 +26,12 @@ fun HomeScreen(
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
         Image(
             painter = painterResource(R.drawable.logo),
             contentDescription = "Logo organizacion",
-            modifier = Modifier.padding(bottom = 40.dp)
+            modifier = Modifier.padding(bottom = 40.dp, top = 20.dp)
         )
         Text(
             text = """
@@ -55,7 +58,7 @@ fun HomeScreen(
             Image(
                 painter = painterResource(R.drawable.noticia_1),
                 contentDescription = "Primer servicio",
-                modifier = Modifier.size(110.dp),
+                modifier = Modifier.size(110.dp).clip(RoundedCornerShape(20.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -85,7 +88,7 @@ fun HomeScreen(
             Image(
                 painter = painterResource(R.drawable.noticia_2),
                 contentDescription = "Primer servicio",
-                modifier = Modifier.size(110.dp),
+                modifier = Modifier.size(110.dp).clip(RoundedCornerShape(20.dp)),
                 contentScale = ContentScale.Crop
             )
 
