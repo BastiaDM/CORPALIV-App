@@ -14,7 +14,7 @@ fun AppTopBar(
     onMenuClick: () -> Unit
 ) {
     TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = Color.Green
+        containerColor = Color.Magenta
     ),
         navigationIcon = {
             TextButton(

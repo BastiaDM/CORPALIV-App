@@ -13,6 +13,8 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.corpalivapp.R
@@ -37,7 +39,8 @@ fun AppDrawer(
                     Image(
                         painter = painterResource(R.drawable.ic_launcher_background),
                         contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        colorFilter = ColorFilter.tint( color = Color.Magenta)
                     )
 
                     Image(
