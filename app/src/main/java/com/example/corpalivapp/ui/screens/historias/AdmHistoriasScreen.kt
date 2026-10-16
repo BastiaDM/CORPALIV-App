@@ -94,10 +94,6 @@ fun AdmHistoriasScreen(
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Text(
-                    text = "Acciones",
-                    style = MaterialTheme.typography.titleMedium
-                )
             }
 
             historias.forEach { historia ->
