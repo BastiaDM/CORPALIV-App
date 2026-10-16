@@ -88,6 +88,16 @@ fun AppDrawer(
                         }
                     }
                 )
+                NavigationDrawerItem(
+                    label = { Text("Administrar historias") },
+                    selected = pantallaActual == "Administrar historias",
+                    onClick = {
+                        onPantallaSeleccionada("Administrar historias")
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
             }
         }
     ) {

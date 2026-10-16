@@ -1,5 +1,4 @@
-
-package com.example.corpalivapp.ui.screens
+package com.example.corpalivapp.ui.screens.historias
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,18 +24,20 @@ import com.example.corpalivapp.data.repository.HistoriasRepository
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.height
 import androidx.compose.ui.res.painterResource
-import com.example.corpalivapp.R
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.layout.ContentScale
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.corpalivapp.viewmodel.HistoriasViewModel
 
 @Composable
 fun HistoriasScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: HistoriasViewModel = viewModel()
 ) {
-    val repository = remember { HistoriasRepository() }
-    val historias = remember { repository.obtenerHistorias() }
+    val historias by viewModel.historias.collectAsState()
 
     var historiaAbierta by remember {
         mutableStateOf<Int?>(null)

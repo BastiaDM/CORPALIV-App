@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import com.example.corpalivapp.ui.components.AppDrawer
 import com.example.corpalivapp.ui.components.AppTopBar
 import com.example.corpalivapp.ui.screens.HomeScreen
-import com.example.corpalivapp.ui.screens.HistoriasScreen
+import com.example.corpalivapp.ui.screens.historias.HistoriasScreen
+import com.example.corpalivapp.ui.screens.historias.AdmHistoriasScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,6 +46,12 @@ fun App() {
                 }
                 "Historias" -> {
                     HistoriasScreen(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+                //temporalmente en este menu, futuramente en admin
+                "Administrar historias" -> {
+                    AdmHistoriasScreen(
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
