@@ -90,6 +90,17 @@ fun AppDrawer(
                         }
                     }
                 )
+
+                NavigationDrawerItem(
+                    label = { Text("Usuario") },
+                    selected = pantallaActual == "Usuario",
+                    onClick = {
+                        onPantallaSeleccionada("Usuario")
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
             }
         }
     ) {
