@@ -1,16 +1,28 @@
+
 package com.example.corpalivapp.ui.screens.historias
 
-import androidx.compose.foundation.Image
+import android.Manifest
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -20,11 +32,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.example.corpalivapp.R
+import androidx.core.content.ContextCompat
+import com.example.corpalivapp.data.CamaraUriFactory
 import com.example.corpalivapp.data.model.HistoriaExito
+import com.example.corpalivapp.ui.components.ImagenInteligente
 
 @Composable
 fun FormularioHistoriaScreen(
@@ -33,6 +46,8 @@ fun FormularioHistoriaScreen(
     onCancelar: () -> Unit,
     onGuardar: (HistoriaExito) -> Unit
 ) {
+    val context = LocalContext.current
+
     var titulo by remember(historia?.id) {
         mutableStateOf(historia?.titulo ?: "")
     }
@@ -45,8 +60,81 @@ fun FormularioHistoriaScreen(
         mutableStateOf(historia?.texto ?: "")
     }
 
+    var imagenUri by remember(historia?.id) {
+        mutableStateOf(historia?.imagenUri)
+    }
+
     var intentoGuardar by remember(historia?.id) {
         mutableStateOf(false)
+    }
+
+    var uriPendienteCamara by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
+    val galeriaLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uriSeleccionado ->
+        if (uriSeleccionado != null) {
+            imagenUri = uriSeleccionado
+        }
+    }
+
+    val camaraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicture()
+    ) { exito ->
+        if (exito && uriPendienteCamara != null) {
+            imagenUri = uriPendienteCamara
+        } else {
+            uriPendienteCamara = null
+        }
+    }
+
+    val permisoCamaraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { concedido ->
+        if (concedido) {
+            try {
+                val uri = CamaraUriFactory.crearUri(context)
+                uriPendienteCamara = uri
+                camaraLauncher.launch(uri)
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "Error al abrir la cámara: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } else {
+            Toast.makeText(
+                context,
+                "Debes conceder el permiso de cámara en Ajustes.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    fun tomarFotografia() {
+        val permisoConcedido = ContextCompat.checkSelfPermission(
+            context,
+            Manifest.permission.CAMERA
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (permisoConcedido) {
+            try {
+                val uri = CamaraUriFactory.crearUri(context)
+                uriPendienteCamara = uri
+                camaraLauncher.launch(uri)
+            } catch (e: Exception) {
+                Toast.makeText(
+                    context,
+                    "Error al abrir la cámara: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        } else {
+            permisoCamaraLauncher.launch(Manifest.permission.CAMERA)
+        }
     }
 
     Column(
@@ -94,24 +182,51 @@ fun FormularioHistoriaScreen(
         )
 
         Text(
-            text = "Imagen provisional",
+            text = "Imagen de la historia",
             style = MaterialTheme.typography.titleMedium
         )
 
-        Image(
-            painter = painterResource(
-                id = historia?.imagen ?: R.drawable.placeholder
-            ),
-            contentDescription = "Imagen de la historia",
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp),
-            contentScale = ContentScale.Crop
+        ImagenInteligente(
+            historia = historia?.copy(imagenUri = imagenUri)
+                ?: if (imagenUri != null) {
+                    HistoriaExito(
+                        id = 0,
+                        titulo = titulo,
+                        subtitulo = subtitulo,
+                        imagen = com.example.corpalivapp.R.drawable.placeholder,
+                        texto = texto,
+                        imagenUri = imagenUri
+                    )
+                } else {
+                    null
+                }
         )
 
-        Text(
-            text = "Por ahora se utiliza una imagen local provisional."
-        )
+        Button(
+            onClick = {
+                galeriaLauncher.launch("image/*")
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Collections,
+                contentDescription = "Galería"
+            )
+            Text("  Elegir desde galería")
+        }
+
+        OutlinedButton(
+            onClick = {
+                tomarFotografia()
+            },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Icon(
+                imageVector = Icons.Filled.CameraAlt,
+                contentDescription = "Cámara"
+            )
+            Text("  Tomar fotografía")
+        }
 
         OutlinedTextField(
             value = texto,
@@ -142,8 +257,9 @@ fun FormularioHistoriaScreen(
                             titulo = titulo.trim(),
                             subtitulo = subtitulo.trim(),
                             imagen = historia?.imagen
-                                ?: R.drawable.placeholder,
-                            texto = texto.trim()
+                                ?: com.example.corpalivapp.R.drawable.placeholder,
+                            texto = texto.trim(),
+                            imagenUri = imagenUri
                         )
                     )
                 }

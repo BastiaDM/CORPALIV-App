@@ -19,19 +19,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.corpalivapp.data.model.HistoriaExito
-import com.example.corpalivapp.data.repository.HistoriasRepository
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.height
-import androidx.compose.ui.res.painterResource
 
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.layout.ContentScale
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.corpalivapp.viewmodel.HistoriasViewModel
-
+import com.example.corpalivapp.ui.components.ImagenInteligente
 @Composable
 fun HistoriasScreen(
     modifier: Modifier = Modifier,
@@ -102,13 +97,8 @@ private fun HistoriaItem(
                         style = MaterialTheme.typography.titleMedium
                     )
 
-                    Image(
-                        painter = painterResource(id = historia.imagen),
-                        contentDescription = "Imagen de ${historia.titulo}",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(180.dp),
-                        contentScale = ContentScale.Crop
+                    ImagenInteligente(
+                        historia = historia
                     )
 
                     Text(

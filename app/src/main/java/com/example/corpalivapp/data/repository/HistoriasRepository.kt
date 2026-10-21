@@ -17,7 +17,7 @@ class HistoriasRepository {
             ),
             HistoriaExito(
                 id = 2,
-                titulo = "Tests historia 1",
+                titulo = "Tests historia 2",
                 subtitulo = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                 imagen = R.drawable.placeholder,
                 texto = "attis nec leo in, posuere tristique justo. Integer sollicitudin " +
@@ -26,7 +26,7 @@ class HistoriasRepository {
             ),
             HistoriaExito(
                 id = 3,
-                titulo = "Tests historia 1",
+                titulo = "Tests historia 3",
                 subtitulo = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
                 imagen = R.drawable.placeholder,
                 texto = "attis nec leo in, posuere tristique justo. Integer sollicitudin " +
