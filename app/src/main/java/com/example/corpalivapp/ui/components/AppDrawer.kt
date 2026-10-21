@@ -101,6 +101,28 @@ fun AppDrawer(
                         }
                     }
                 )
+
+                NavigationDrawerItem(
+                    label = { Text("Formulario colaboradores") },
+                    selected = pantallaActual == "Formulario colaboradores",
+                    onClick = {
+                        onPantallaSeleccionada("Formulario colaboradores")
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
+
+                NavigationDrawerItem(
+                    label = { Text("Administrar colaboraciones") },
+                    selected = pantallaActual == "Administrar colaboraciones",
+                    onClick = {
+                        onPantallaSeleccionada("Administrar colaboraciones")
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    }
+                )
             }
         }
     ) {

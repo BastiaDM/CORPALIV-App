@@ -1,5 +1,10 @@
 package com.example.corpalivapp.ui
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.corpalivapp.ui.screens.AdmColaboracionesScreen
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,6 +26,11 @@ import com.example.corpalivapp.ui.screens.historias.HistoriasScreen
 import com.example.corpalivapp.ui.screens.historias.AdmHistoriasScreen
 import com.example.corpalivapp.ui.screens.ProgramasScreen
 import com.example.corpalivapp.ui.screens.UsuarioScreen
+
+import com.example.corpalivapp.data.repository.ColaboracionRepository
+import com.example.corpalivapp.ui.screens.FormularioScreen
+import com.example.corpalivapp.viewmodel.ColaboracionViewModel
+
 import android.widget.Toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +53,24 @@ fun App() {
     val usuarioRepository = remember {
         UsuarioRepository(database.usuarioDao())
     }
+
+    val colaboracionViewModel: ColaboracionViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(
+                modelClass: Class<T>
+            ): T {
+                if (modelClass.isAssignableFrom(ColaboracionViewModel::class.java)) {
+                    @Suppress("UNCHECKED_CAST")
+                    return ColaboracionViewModel(
+                        ColaboracionRepository(database.colaboracionDao())
+                    ) as T
+                }
+
+                throw IllegalArgumentException("ViewModel desconocido")
+            }
+        }
+    )
+
     AppDrawer(
         pantallaActual = pantallaActual,
         onPantallaSeleccionada = {
@@ -133,6 +161,18 @@ fun App() {
                                     }
                             }
                         }
+                    )
+                }
+                "Formulario colaboradores" -> {
+                    FormularioScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = colaboracionViewModel
+                    )
+                }
+                "Administrar colaboraciones" -> {
+                    AdmColaboracionesScreen(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = colaboracionViewModel
                     )
                 }
             }
