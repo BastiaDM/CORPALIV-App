@@ -1,40 +1,53 @@
+
 package com.example.corpalivapp.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.corpalivapp.data.AppDataBase
 import com.example.corpalivapp.data.model.HistoriaExito
 import com.example.corpalivapp.data.repository.HistoriasRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
-class HistoriasViewModel : ViewModel() {
+class HistoriasViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val repository = HistoriasRepository()
+    private val database = AppDataBase.getInstance(application)
 
-    private val _historias = MutableStateFlow(
-        repository.obtenerHistorias()
+    private val repository = HistoriasRepository(
+        database.historiaExitoDao()
     )
 
-    val historias = _historias.asStateFlow()
+    val historias = repository.obtenerHistorias().stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyList()
+    )
+
+    init {
+        viewModelScope.launch {
+            repository.inicializarHistoriasSiVacias()
+        }
+    }
 
     fun agregar(historia: HistoriaExito) {
-        val nuevoId = (_historias.value.maxOfOrNull { it.id } ?: 0) + 1
-
-        val nuevaHistoria = historia.copy(id = nuevoId)
-
-        _historias.value = _historias.value + nuevaHistoria
+        viewModelScope.launch {
+            repository.agregar(historia)
+        }
     }
 
     fun actualizar(historia: HistoriaExito) {
-        _historias.value = _historias.value.map { actual ->
-            if (actual.id == historia.id) {
-                historia
-            } else {
-                actual
-            }
+        viewModelScope.launch {
+            repository.actualizar(historia)
         }
     }
 
     fun eliminar(id: Int) {
-        _historias.value = _historias.value.filter { it.id != id }
+        viewModelScope.launch {
+            repository.eliminar(id)
+        }
     }
 }
