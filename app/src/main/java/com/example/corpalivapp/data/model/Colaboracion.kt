@@ -22,7 +22,6 @@ data class Colaboracion(
     val telefono: String = "",
 
     val programa: String,
-    val tipoColaboracion: String,
     val tipoDonacion: String,
     val monto: Int,
 

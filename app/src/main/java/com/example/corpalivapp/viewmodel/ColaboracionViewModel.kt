@@ -146,6 +146,23 @@ class ColaboracionViewModel(
             return "Ingresa un correo electrónico válido."
         }
 
+        val telefono = colaboracion.telefono.trim()
+
+        if (telefono.isNotBlank()) {
+            val formatoTelefono = Regex(
+                "^\\+?[0-9][0-9\\s().-]{5,23}[0-9]$"
+            )
+
+            val cantidadDigitos = telefono.count { it.isDigit() }
+
+            if (!formatoTelefono.matches(telefono) ||
+                cantidadDigitos !in 7..15
+            ) {
+                return "Ingresa un teléfono válido con entre 7 y 15 dígitos."
+            }
+        }
+
+
         // Validar programa
         if (colaboracion.programa !in listOf(
                 "Programa de Inclusión Laboral",
@@ -155,24 +172,33 @@ class ColaboracionViewModel(
             return "Selecciona un programa válido."
         }
 
-        // Validar tipo de colaboración
-        if (colaboracion.tipoColaboracion !in listOf(
-                "Donación económica",
-                "Apadrinamiento",
-                "Otro aporte económico"
-            )
-        ) {
-            return "Selecciona un tipo de colaboración."
-        }
-
         // Validar modalidad
         if (colaboracion.tipoDonacion !in listOf("Única", "Mensual")) {
             return "Selecciona una modalidad de donación."
         }
 
-        // Validar monto
-        if (colaboracion.monto !in 1..1_000_000_000) {
-            return "El monto debe ser positivo y no superar $1.000.000.000 CLP."
+        // Validar el monto máximo
+        if (colaboracion.monto > 1_000_000_000) {
+            return "El monto ingresado supera el límite máximo permitido para una colaboración."
+        }
+
+        // Validar el monto mínimo según la modalidad
+        when (colaboracion.tipoDonacion) {
+            "Única" -> {
+                if (colaboracion.monto < 1000) {
+                    return "La donación única debe ser de al menos $1.000."
+                }
+            }
+
+            "Mensual" -> {
+                if (colaboracion.monto < 500) {
+                    return "La donación mensual debe ser de al menos $500."
+                }
+            }
+
+            else -> {
+                return "Selecciona una modalidad de donación válida."
+            }
         }
 
         // Validar medio de pago

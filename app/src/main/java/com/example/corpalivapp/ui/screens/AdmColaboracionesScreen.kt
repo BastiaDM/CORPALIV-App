@@ -247,10 +247,6 @@ private fun ColaboracionCard(
             )
 
             Text(
-                text = "Colaboración: ${colaboracion.tipoColaboracion}"
-            )
-
-            Text(
                 text = "Modalidad: ${colaboracion.tipoDonacion}"
             )
 

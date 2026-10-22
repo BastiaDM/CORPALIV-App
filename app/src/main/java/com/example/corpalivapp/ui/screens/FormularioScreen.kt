@@ -82,7 +82,6 @@ fun FormularioScreen(
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
-        // SECCIÓN 1: TIPO DE COLABORADOR
         SeccionFormulario(titulo = "1. Tipo de colaborador") {
             SelectorBotones(
                 opciones = listOf("Persona", "Empresa"),
@@ -91,11 +90,10 @@ fun FormularioScreen(
             )
         }
 
-        // SECCIÓN 2: DATOS DEL COLABORADOR
         SeccionFormulario(titulo = "2. Datos del colaborador") {
             if (tipoColaborador.isBlank()) {
                 Text(
-                    text = "Selecciona Persona o Empresa para mostrar los campos.",
+                    text = "Selecciona Persona o Empresa para mostrar los demas campos.",
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -139,7 +137,6 @@ fun FormularioScreen(
             ) { telefono = it }
         }
 
-        // SECCIÓN 3: PROGRAMA
         SeccionFormulario(titulo = "3. Programa al que deseas aportar") {
             SelectorBotones(
                 opciones = listOf(
@@ -151,21 +148,7 @@ fun FormularioScreen(
             )
         }
 
-        // SECCIÓN 4: TIPO DE COLABORACIÓN
-        SeccionFormulario(titulo = "4. Tipo de colaboración") {
-            SelectorBotones(
-                opciones = listOf(
-                    "Donación económica",
-                    "Apadrinamiento",
-                    "Otro aporte económico"
-                ),
-                seleccionado = tipoColaboracion,
-                alSeleccionar = { tipoColaboracion = it }
-            )
-        }
-
-        // SECCIÓN 5: DONACIÓN
-        SeccionFormulario(titulo = "5. Detalles de la donación") {
+        SeccionFormulario(titulo = "4. Detalles de la donación") {
             Text(
                 text = "Modalidad",
                 fontWeight = FontWeight.Medium
@@ -198,11 +181,6 @@ fun FormularioScreen(
                 alSeleccionar = { medioPago = it }
             )
 
-            Text(
-                text = "Este dato es referencial. La aplicación no procesa pagos.",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
 
         if (mensaje != null) {
@@ -241,7 +219,6 @@ fun FormularioScreen(
                     correo = correo.trim(),
                     telefono = telefono,
                     programa = programa,
-                    tipoColaboracion = tipoColaboracion,
                     tipoDonacion = tipoDonacion,
                     monto = monto.toIntOrNull() ?: 0,
                     medioPago = medioPago

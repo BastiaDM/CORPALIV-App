@@ -33,7 +33,6 @@ class ColaboracionRepository(
                     correo = "ana.prueba@example.com",
                     telefono = "900000001",
                     programa = "Programa de Inclusión Laboral",
-                    tipoColaboracion = "Donación económica",
                     tipoDonacion = "Única",
                     monto = 5000,
                     medioPago = "Transferencia"
@@ -48,7 +47,6 @@ class ColaboracionRepository(
                     correo = "carlos.prueba@example.com",
                     telefono = "900000002",
                     programa = "Taller Sociolaboral",
-                    tipoColaboracion = "Apadrinamiento",
                     tipoDonacion = "Mensual",
                     monto = 10000,
                     medioPago = "Por definir"
@@ -63,7 +61,6 @@ class ColaboracionRepository(
                     correo = "empresa.prueba@example.com",
                     telefono = "900000003",
                     programa = "Taller Sociolaboral",
-                    tipoColaboracion = "Otro aporte económico",
                     tipoDonacion = "Única",
                     monto = 20000,
                     medioPago = "Efectivo"
