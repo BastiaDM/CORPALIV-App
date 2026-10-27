@@ -27,6 +27,10 @@ fun UsuarioScreen(
 ) {
     var isRegister by remember { mutableStateOf(false) }
 
+    var aceptaCondiciones by remember { mutableStateOf(false) }
+    var aceptaPromociones by remember { mutableStateOf(false) }
+    var mostrarErrorCondiciones by remember { mutableStateOf(false) }
+
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
     val errores by viewModel.errores.collectAsState()
@@ -88,6 +92,77 @@ fun UsuarioScreen(
             enabled = estado != EstadoAutenticacion.LOADING,
             modifier = Modifier.fillMaxWidth()
         )
+
+        if (isRegister) {
+            Spacer(Modifier.height(12.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = aceptaCondiciones,
+                    onCheckedChange = { marcada ->
+                        aceptaCondiciones = marcada
+
+                        if (marcada) {
+                            mostrarErrorCondiciones = false
+                        }
+                    },
+                    enabled = estado != EstadoAutenticacion.LOADING,
+                    colors = CheckboxDefaults.colors(
+                        uncheckedColor = if (mostrarErrorCondiciones) {
+                            MaterialTheme.colorScheme.error
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                )
+
+                Text(
+                    text = "Acepto los términos y condiciones y la política de privacidad",
+                    modifier = Modifier.weight(1f),
+                    color = if (
+                        mostrarErrorCondiciones && !aceptaCondiciones
+                    ) {
+                        MaterialTheme.colorScheme.error
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
+
+            if (mostrarErrorCondiciones && !aceptaCondiciones) {
+                Text(
+                    text = "Debes aceptar los términos y condiciones para registrarte.",
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 12.dp, bottom = 8.dp)
+                )
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = aceptaPromociones,
+                    onCheckedChange = { marcada ->
+                        aceptaPromociones = marcada
+                    },
+                    enabled = estado != EstadoAutenticacion.LOADING
+                )
+
+                Text(
+                    text = "Deseo recibir novedades y promociones (opcional)",
+                    modifier = Modifier.weight(1f),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
 
         Spacer(Modifier.height(16.dp))
 
@@ -168,7 +243,12 @@ fun UsuarioScreen(
 
         Button(
             onClick = {
-                viewModel.autenticar(esRegistro = isRegister)
+                if (isRegister && !aceptaCondiciones) {
+                    // Impide continuar y resalta la checkbox obligatoria.
+                    mostrarErrorCondiciones = true
+                } else {
+                    viewModel.autenticar(esRegistro = isRegister)
+                }
             },
             enabled = estado != EstadoAutenticacion.LOADING,
             modifier = Modifier.fillMaxWidth()
@@ -179,16 +259,23 @@ fun UsuarioScreen(
         TextButton(
             onClick = {
                 isRegister = !isRegister
+
+                // Reiniciar las checkbox al cambiar de pantalla.
+                aceptaCondiciones = false
+                aceptaPromociones = false
+                mostrarErrorCondiciones = false
+
                 viewModel.limpiarResultado()
             },
             enabled = estado != EstadoAutenticacion.LOADING,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                if (isRegister)
+                if (isRegister) {
                     "¿Ya tienes cuenta? Inicia sesión"
-                else
+                } else {
                     "¿No tienes cuenta? Regístrate"
+                }
             )
         }
     }
