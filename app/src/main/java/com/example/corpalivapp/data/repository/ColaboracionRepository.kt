@@ -63,7 +63,7 @@ class ColaboracionRepository(
                     programa = "Taller Sociolaboral",
                     tipoDonacion = "Única",
                     monto = 20000,
-                    medioPago = "Efectivo"
+                    medioPago = "Transferencia"
                 )
             )
 

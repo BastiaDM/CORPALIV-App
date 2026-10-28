@@ -71,7 +71,6 @@ abstract class AppDataBase : RoomDatabase() {
                         correo TEXT NOT NULL,
                         telefono TEXT NOT NULL,
                         programa TEXT NOT NULL,
-                        tipoColaboracion TEXT NOT NULL,
                         tipoDonacion TEXT NOT NULL,
                         monto INTEGER NOT NULL,
                         medioPago TEXT NOT NULL,
