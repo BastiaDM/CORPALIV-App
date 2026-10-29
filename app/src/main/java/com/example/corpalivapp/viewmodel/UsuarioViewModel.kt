@@ -96,7 +96,7 @@ class UsuarioViewModel(
         viewModelScope.launch {
             _estado.value = EstadoAutenticacion.LOADING
             _mensaje.value = null
-            _progreso.value = 20f
+            _progreso.value = 99f
 
             try {
                 val resultado = withContext(Dispatchers.IO) {

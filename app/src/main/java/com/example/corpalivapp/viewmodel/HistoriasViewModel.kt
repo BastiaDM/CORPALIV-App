@@ -11,6 +11,17 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+data class ErroresHistoria(
+    val titulo: String? = null,
+    val subtitulo: String? = null,
+    val texto: String? = null
+) {
+    val esValida: Boolean
+        get() = titulo == null &&
+                subtitulo == null &&
+                texto == null
+}
+
 class HistoriasViewModel(
     application: Application
 ) : AndroidViewModel(application) {
@@ -31,6 +42,34 @@ class HistoriasViewModel(
         viewModelScope.launch {
             repository.inicializarHistoriasSiVacias()
         }
+    }
+
+    // Comprueba que los datos de la historia sean válidos.
+    fun validarHistoria(
+        titulo: String,
+        subtitulo: String,
+        texto: String
+    ): ErroresHistoria {
+
+        return ErroresHistoria(
+            titulo = if (titulo.isBlank()) {
+                "El título es obligatorio"
+            } else {
+                null
+            },
+
+            subtitulo = if (subtitulo.isBlank()) {
+                "El subtítulo es obligatorio"
+            } else {
+                null
+            },
+
+            texto = if (texto.isBlank()) {
+                "El texto completo es obligatorio"
+            } else {
+                null
+            }
+        )
     }
 
     fun agregar(historia: HistoriaExito) {

@@ -1,3 +1,4 @@
+
 package com.example.corpalivapp.ui.screens.historias
 
 import androidx.compose.foundation.layout.Arrangement
@@ -49,11 +50,11 @@ fun AdmHistoriasScreen(
         mutableStateOf<HistoriaExito?>(null)
     }
 
-
     if (mostrarFormulario) {
         FormularioHistoriaScreen(
             historia = historiaEnEdicion,
             modifier = modifier,
+            viewModel = viewModel,
             onCancelar = {
                 mostrarFormulario = false
                 historiaEnEdicion = null
@@ -95,7 +96,6 @@ fun AdmHistoriasScreen(
                     modifier = Modifier.weight(1f),
                     style = MaterialTheme.typography.titleMedium
                 )
-
             }
 
             historias.forEach { historia ->
@@ -138,9 +138,7 @@ fun AdmHistoriasScreen(
                                 onClick = {
                                     historiaEnEdicion = historia
                                     mostrarFormulario = true
-                                },
-                                colors = ButtonDefaults.buttonColors(
-                                        MaterialTheme.colorScheme.primary)
+                                }
                             ) {
                                 Text("Editar")
                             }
@@ -173,7 +171,7 @@ fun AdmHistoriasScreen(
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    MaterialTheme.colorScheme.primary)
+                    containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Text("Ver Historias")
             }

@@ -9,10 +9,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -35,14 +33,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.corpalivapp.R
 import com.example.corpalivapp.data.CamaraUriFactory
 import com.example.corpalivapp.data.model.HistoriaExito
 import com.example.corpalivapp.ui.components.ImagenInteligente
+import com.example.corpalivapp.viewmodel.ErroresHistoria
+import com.example.corpalivapp.viewmodel.HistoriasViewModel
 
 @Composable
 fun FormularioHistoriaScreen(
     historia: HistoriaExito?,
     modifier: Modifier = Modifier,
+    viewModel: HistoriasViewModel = viewModel(),
     onCancelar: () -> Unit,
     onGuardar: (HistoriaExito) -> Unit
 ) {
@@ -68,10 +71,15 @@ fun FormularioHistoriaScreen(
         mutableStateOf(false)
     }
 
+    var errores by remember(historia?.id) {
+        mutableStateOf(ErroresHistoria())
+    }
+
     var uriPendienteCamara by remember {
         mutableStateOf<Uri?>(null)
     }
 
+    // Abre la galería y obtiene la imagen seleccionada.
     val galeriaLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uriSeleccionado ->
@@ -80,6 +88,7 @@ fun FormularioHistoriaScreen(
         }
     }
 
+    // Abre la cámara y recibe el resultado de la fotografía.
     val camaraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { exito ->
@@ -90,6 +99,7 @@ fun FormularioHistoriaScreen(
         }
     }
 
+    // Solicita el permiso para utilizar la cámara.
     val permisoCamaraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { concedido ->
@@ -114,6 +124,7 @@ fun FormularioHistoriaScreen(
         }
     }
 
+    // Comprueba el permiso y abre la cámara.
     fun tomarFotografia() {
         val permisoConcedido = ContextCompat.checkSelfPermission(
             context,
@@ -153,30 +164,52 @@ fun FormularioHistoriaScreen(
             style = MaterialTheme.typography.headlineMedium
         )
 
+        // Campo título.
         OutlinedTextField(
             value = titulo,
-            onValueChange = { titulo = it },
+            onValueChange = {
+                titulo = it
+
+                if (intentoGuardar) {
+                    errores = viewModel.validarHistoria(
+                        titulo = it,
+                        subtitulo = subtitulo,
+                        texto = texto
+                    )
+                }
+            },
             label = { Text("Título") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            isError = intentoGuardar && titulo.isBlank(),
+            isError = errores.titulo != null,
             supportingText = {
-                if (intentoGuardar && titulo.isBlank()) {
-                    Text("El título es obligatorio")
+                errores.titulo?.let { mensaje ->
+                    Text(mensaje)
                 }
             }
         )
 
+        // Campo subtítulo.
         OutlinedTextField(
             value = subtitulo,
-            onValueChange = { subtitulo = it },
+            onValueChange = {
+                subtitulo = it
+
+                if (intentoGuardar) {
+                    errores = viewModel.validarHistoria(
+                        titulo = titulo,
+                        subtitulo = it,
+                        texto = texto
+                    )
+                }
+            },
             label = { Text("Subtítulo") },
             modifier = Modifier.fillMaxWidth(),
             minLines = 2,
-            isError = intentoGuardar && subtitulo.isBlank(),
+            isError = errores.subtitulo != null,
             supportingText = {
-                if (intentoGuardar && subtitulo.isBlank()) {
-                    Text("El subtítulo es obligatorio")
+                errores.subtitulo?.let { mensaje ->
+                    Text(mensaje)
                 }
             }
         )
@@ -186,6 +219,7 @@ fun FormularioHistoriaScreen(
             style = MaterialTheme.typography.titleMedium
         )
 
+        // Muestra la imagen seleccionada o la imagen de la historia existente.
         ImagenInteligente(
             historia = historia?.copy(imagenUri = imagenUri)
                 ?: if (imagenUri != null) {
@@ -193,7 +227,7 @@ fun FormularioHistoriaScreen(
                         id = 0,
                         titulo = titulo,
                         subtitulo = subtitulo,
-                        imagen = com.example.corpalivapp.R.drawable.placeholder,
+                        imagen = R.drawable.placeholder,
                         texto = texto,
                         imagenUri = imagenUri
                     )
@@ -202,6 +236,7 @@ fun FormularioHistoriaScreen(
                 }
         )
 
+        // Seleccionar una imagen de la galería.
         Button(
             onClick = {
                 galeriaLauncher.launch("image/*")
@@ -215,6 +250,7 @@ fun FormularioHistoriaScreen(
             Text("  Elegir desde galería")
         }
 
+        // Tomar una fotografía.
         OutlinedButton(
             onClick = {
                 tomarFotografia()
@@ -228,36 +264,50 @@ fun FormularioHistoriaScreen(
             Text("  Tomar fotografía")
         }
 
+        // Campo texto completo.
         OutlinedTextField(
             value = texto,
-            onValueChange = { texto = it },
+            onValueChange = {
+                texto = it
+
+                if (intentoGuardar) {
+                    errores = viewModel.validarHistoria(
+                        titulo = titulo,
+                        subtitulo = subtitulo,
+                        texto = it
+                    )
+                }
+            },
             label = { Text("Texto completo") },
             modifier = Modifier.fillMaxWidth(),
             minLines = 5,
-            isError = intentoGuardar && texto.isBlank(),
+            isError = errores.texto != null,
             supportingText = {
-                if (intentoGuardar && texto.isBlank()) {
-                    Text("El texto completo es obligatorio")
+                errores.texto?.let { mensaje ->
+                    Text(mensaje)
                 }
             }
         )
 
+        // Validar y guardar.
         Button(
             onClick = {
                 intentoGuardar = true
 
-                if (
-                    titulo.isNotBlank() &&
-                    subtitulo.isNotBlank() &&
-                    texto.isNotBlank()
-                ) {
+                errores = viewModel.validarHistoria(
+                    titulo = titulo,
+                    subtitulo = subtitulo,
+                    texto = texto
+                )
+
+                if (errores.esValida) {
                     onGuardar(
                         HistoriaExito(
                             id = historia?.id ?: 0,
                             titulo = titulo.trim(),
                             subtitulo = subtitulo.trim(),
                             imagen = historia?.imagen
-                                ?: com.example.corpalivapp.R.drawable.placeholder,
+                                ?: R.drawable.placeholder,
                             texto = texto.trim(),
                             imagenUri = imagenUri
                         )

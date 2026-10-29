@@ -40,7 +40,7 @@ fun UsuarioScreen(
 
     val progresoAnimado by animateFloatAsState(
         targetValue = progreso.coerceIn(0f, 100f) / 100f,
-        animationSpec = tween(durationMillis = 400),
+        animationSpec = tween(durationMillis = 1200),
         label = "progresoLogin"
     )
 

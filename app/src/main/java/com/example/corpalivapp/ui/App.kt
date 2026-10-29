@@ -29,6 +29,7 @@ import com.example.corpalivapp.ui.screens.FormularioScreen
 import com.example.corpalivapp.viewmodel.ColaboracionViewModel
 
 import android.widget.Toast
+import androidx.compose.ui.draw.scale
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
