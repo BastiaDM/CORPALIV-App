@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
@@ -40,7 +41,7 @@ fun AppDrawer(
                         painter = painterResource(R.drawable.ic_launcher_background),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        colorFilter = ColorFilter.tint(color = Color.Magenta)
+                        colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary)
                     )
 
                     Image(

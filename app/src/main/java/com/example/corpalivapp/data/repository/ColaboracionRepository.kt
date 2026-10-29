@@ -14,9 +14,6 @@ class ColaboracionRepository(
     suspend fun insertar(colaboracion: Colaboracion) =
         colaboracionDao.insertar(colaboracion)
 
-    suspend fun actualizar(colaboracion: Colaboracion) =
-        colaboracionDao.actualizar(colaboracion)
-
     suspend fun eliminar(colaboracion: Colaboracion) =
         colaboracionDao.eliminar(colaboracion)
 

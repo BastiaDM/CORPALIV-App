@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -126,7 +127,7 @@ fun HomeScreen(
                     painter = painterResource(R.drawable.logo_facebook),
                     contentDescription = "Facebook",
                     modifier = Modifier.size(32.dp),
-                    tint = androidx.compose.ui.graphics.Color.Magenta
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }

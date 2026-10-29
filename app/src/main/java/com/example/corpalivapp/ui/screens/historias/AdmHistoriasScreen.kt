@@ -10,6 +10,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -31,7 +32,8 @@ import com.example.corpalivapp.viewmodel.HistoriasViewModel
 @Composable
 fun AdmHistoriasScreen(
     modifier: Modifier = Modifier,
-    viewModel: HistoriasViewModel = viewModel()
+    viewModel: HistoriasViewModel = viewModel(),
+    onPantallaSeleccionada: (String) -> Unit
 ) {
     val historias by viewModel.historias.collectAsState()
 
@@ -136,7 +138,9 @@ fun AdmHistoriasScreen(
                                 onClick = {
                                     historiaEnEdicion = historia
                                     mostrarFormulario = true
-                                }
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                        MaterialTheme.colorScheme.primary)
                             ) {
                                 Text("Editar")
                             }
@@ -161,6 +165,17 @@ fun AdmHistoriasScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text("Agregar historia")
+            }
+
+            Button(
+                onClick = {
+                    onPantallaSeleccionada("Historias")
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.primary)
+            ) {
+                Text("Ver Historias")
             }
         }
     }

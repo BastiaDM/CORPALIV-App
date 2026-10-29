@@ -102,7 +102,10 @@ fun App() {
                 //temporalmente en este menu, futuramente en admin
                 "Administrar historias" -> {
                     AdmHistoriasScreen(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding),
+                        onPantallaSeleccionada = { it ->
+                            pantallaActual = it
+                        }
                     )
                 }
 

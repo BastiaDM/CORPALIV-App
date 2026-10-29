@@ -104,7 +104,6 @@ class ColaboracionViewModel(
                     "Selecciona un medio de pago."
                 } else null
             }
-
             else -> null
         }
 
@@ -371,25 +370,6 @@ class ColaboracionViewModel(
         }
     }
 
-    fun actualizar(colaboracion: Colaboracion) {
-        if (!validarFormulario(colaboracion)) {
-            _mensaje.value = "Revisa los campos marcados antes de continuar."
-            return
-        }
-
-        viewModelScope.launch {
-            try {
-                withContext(Dispatchers.IO) {
-                    repository.actualizar(colaboracion)
-                }
-
-                _mensaje.value = "Colaboración actualizada."
-                _errores.value = ColaboracionErrores()
-            } catch (e: Exception) {
-                _mensaje.value = "No se pudo actualizar la colaboración."
-            }
-        }
-    }
 
     fun eliminar(colaboracion: Colaboracion) {
         viewModelScope.launch {
@@ -403,13 +383,5 @@ class ColaboracionViewModel(
                 _mensaje.value = "No se pudo eliminar la colaboración."
             }
         }
-    }
-
-    fun limpiarMensaje() {
-        _mensaje.value = null
-    }
-
-    fun limpiarErrores() {
-        _errores.value = ColaboracionErrores()
     }
 }

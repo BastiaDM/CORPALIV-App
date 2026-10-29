@@ -1,6 +1,7 @@
 package com.example.corpalivapp.ui.components
 
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -16,7 +17,7 @@ fun AppTopBar(
     onMenuClick: () -> Unit
 ) {
     TopAppBar(colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = Color.Magenta
+        containerColor = MaterialTheme.colorScheme.primary
     ),
         navigationIcon = {
             TextButton(
