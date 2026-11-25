@@ -309,7 +309,8 @@ fun FormularioHistoriaScreen(
                             imagen = historia?.imagen
                                 ?: R.drawable.placeholder,
                             texto = texto.trim(),
-                            imagenUri = imagenUri
+                            imagenUri = imagenUri,
+                            imagenBase64 = historia?.imagenBase64
                         )
                     )
                 }

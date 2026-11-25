@@ -1,11 +1,15 @@
 package com.example.corpalivapp.data.repository
 
-import com.example.corpalivapp.data.dao.UsuarioDao
-import com.example.corpalivapp.data.model.Usuario
-import com.example.corpalivapp.data.security.PasswordHasher
+import com.example.corpalivapp.data.remote.ApiService
+import com.example.corpalivapp.data.remote.AuthRequest
+import com.example.corpalivapp.data.remote.RetrofitInstance
+import com.example.corpalivapp.data.remote.mensajeUsuario
+import com.example.corpalivapp.data.security.SessionManager
+import kotlin.coroutines.cancellation.CancellationException
 
+// Registro e inicio de sesion contra auth-service. El hash de la contrasena lo hace el servidor.
 class UsuarioRepository(
-    private val usuarioDao: UsuarioDao
+    private val api: ApiService = RetrofitInstance.api
 ) {
     suspend fun register(
         email: String,
@@ -13,26 +17,23 @@ class UsuarioRepository(
     ): Result<Unit> {
         val normalizedEmail = email.trim().lowercase()
 
-        if (usuarioDao.findByEmail(normalizedEmail) != null) {
-            return Result.failure(
-                IllegalArgumentException(
-                    "Este correo ya está registrado."
+        return try {
+            val respuesta = api.register(AuthRequest(normalizedEmail, password))
+
+            if (respuesta.status == "ok") {
+                Result.success(Unit)
+            } else {
+                Result.failure(
+                    IllegalArgumentException(
+                        respuesta.message ?: "No se pudo registrar el usuario."
+                    )
                 )
-            )
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(IllegalStateException(e.mensajeUsuario()))
         }
-
-        val salt = PasswordHasher.newSalt()
-        val hash = PasswordHasher.hash(password, salt)
-
-        usuarioDao.insert(
-            Usuario(
-                email = normalizedEmail,
-                passwordHash = hash,
-                passwordSalt = salt
-            )
-        )
-
-        return Result.success(Unit)
     }
 
     suspend fun login(
@@ -40,39 +41,25 @@ class UsuarioRepository(
         password: String
     ): Result<Unit> {
         val normalizedEmail = email.trim().lowercase()
-        val user = usuarioDao.findByEmail(normalizedEmail)
 
-        if (user == null ||
-            !PasswordHasher.verify(
-                password,
-                user.passwordSalt,
-                user.passwordHash
-            )
-        ) {
-            return Result.failure(
-                IllegalArgumentException(
-                    "Correo o contraseña incorrectos."
+        return try {
+            val respuesta = api.login(AuthRequest(normalizedEmail, password))
+            val token = respuesta.token
+
+            if (respuesta.status == "ok" && !token.isNullOrBlank()) {
+                SessionManager.guardarToken(token)
+                Result.success(Unit)
+            } else {
+                Result.failure(
+                    IllegalArgumentException(
+                        respuesta.message ?: "Correo o contraseña incorrectos."
+                    )
                 )
-            )
-        }
-
-        return Result.success(Unit)
-    }
-    suspend fun createDefaultUserIfNeeded() {
-        val email = "testo@demo.com"
-
-        if (usuarioDao.findByEmail(email) == null) {
-            val password = "Test1234!"
-            val salt = PasswordHasher.newSalt()
-            val hash = PasswordHasher.hash(password, salt)
-
-            usuarioDao.insert(
-                Usuario(
-                    email = email,
-                    passwordHash = hash,
-                    passwordSalt = salt
-                )
-            )
+            }
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Result.failure(IllegalStateException(e.mensajeUsuario()))
         }
     }
 }

@@ -18,6 +18,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +38,11 @@ fun AdmHistoriasScreen(
     onPantallaSeleccionada: (String) -> Unit
 ) {
     val historias by viewModel.historias.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.cargar()
+    }
 
     var mostrarFormulario by remember {
         mutableStateOf(false)
@@ -86,6 +92,13 @@ fun AdmHistoriasScreen(
             Text(
                 text = "Total de historias: ${historias.size}"
             )
+
+            error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

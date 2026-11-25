@@ -11,6 +11,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
@@ -33,6 +34,12 @@ fun HistoriasScreen(
     viewModel: HistoriasViewModel = viewModel()
 ) {
     val historias by viewModel.historias.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    // Actualiza la lista desde el backend cada vez que se abre la pantalla.
+    LaunchedEffect(Unit) {
+        viewModel.cargar()
+    }
 
     var historiaAbierta by remember {
         mutableStateOf<Int?>(null)
@@ -49,6 +56,13 @@ fun HistoriasScreen(
             text = "Historias de éxito",
             style = MaterialTheme.typography.headlineMedium
         )
+
+        error?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
 
         historias.forEach { historia ->
             HistoriaItem(

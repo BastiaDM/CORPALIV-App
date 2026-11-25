@@ -5,6 +5,7 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.corpalivapp.data.model.Colaboracion
+import com.example.corpalivapp.data.remote.mensajeUsuario
 import com.example.corpalivapp.data.repository.ColaboracionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.cancellation.CancellationException
 
 data class ColaboracionErrores(
     val tipoColaborador: String? = null,
@@ -38,12 +40,14 @@ class ColaboracionViewModel(
     val colaboraciones: StateFlow<List<Colaboracion>> =
         _colaboraciones.asStateFlow()
 
-    private val _mensaje = MutableStateFlow<String?>(null)
+    // Error al cargar o eliminar en la lista de administracion.
+    private val _errorLista = MutableStateFlow<String?>(null)
+    val errorLista: StateFlow<String?> = _errorLista.asStateFlow()
 
+    private val _mensaje = MutableStateFlow<String?>(null)
     val mensaje: StateFlow<String?> = _mensaje.asStateFlow()
 
     private val _errores = MutableStateFlow(ColaboracionErrores())
-
     val errores: StateFlow<ColaboracionErrores> =
         _errores.asStateFlow()
 
@@ -58,14 +62,17 @@ class ColaboracionViewModel(
         "Por definir"
     )
 
-    init {
+    // Descarga la lista desde el backend.
+    // Requiere haber iniciado sesión.
+    fun cargar() {
         viewModelScope.launch {
-            repository.inicializarColaboracionesSiVacias()
-        }
-
-        viewModelScope.launch {
-            repository.observarTodas().collect { lista ->
-                _colaboraciones.value = lista
+            try {
+                _colaboraciones.value = repository.obtenerTodas()
+                _errorLista.value = null
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                _errorLista.value = e.mensajeUsuario()
             }
         }
     }
@@ -104,6 +111,7 @@ class ColaboracionViewModel(
                     "Selecciona un medio de pago."
                 } else null
             }
+
             else -> null
         }
 
@@ -152,10 +160,13 @@ class ColaboracionViewModel(
 
             rut = validarRutMensaje(colaboracion.rut),
 
+            // CORREGIDO: primero comprobamos si la edad es null.
             edad = if (esPersona) {
-                colaboracion.edad?.let {
-                    validarEdad(it.toString())
-                } ?: "La edad es obligatoria."
+                if (colaboracion.edad == null) {
+                    "La edad es obligatoria."
+                } else {
+                    validarEdad(colaboracion.edad.toString())
+                }
             } else null,
 
             razonSocial = if (esEmpresa) {
@@ -364,12 +375,13 @@ class ColaboracionViewModel(
 
                 _mensaje.value = "Colaboración registrada correctamente."
                 _errores.value = ColaboracionErrores()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _mensaje.value = "No se pudo guardar la colaboración."
+                _mensaje.value = e.mensajeUsuario()
             }
         }
     }
-
 
     fun eliminar(colaboracion: Colaboracion) {
         viewModelScope.launch {
@@ -379,8 +391,11 @@ class ColaboracionViewModel(
                 }
 
                 _mensaje.value = "Colaboración eliminada."
+                cargar()
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                _mensaje.value = "No se pudo eliminar la colaboración."
+                _errorLista.value = e.mensajeUsuario()
             }
         }
     }

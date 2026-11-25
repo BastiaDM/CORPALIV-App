@@ -3,7 +3,6 @@ package com.example.corpalivapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.corpalivapp.data.AppDataBase
 import com.example.corpalivapp.data.repository.UsuarioRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,9 +27,7 @@ class UsuarioViewModel(
     application: Application
 ) : AndroidViewModel(application) {
 
-    private val repositorio = UsuarioRepository(
-        AppDataBase.getInstance(application).usuarioDao()
-    )
+    private val repositorio = UsuarioRepository()
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()

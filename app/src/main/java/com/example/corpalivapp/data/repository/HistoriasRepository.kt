@@ -1,65 +1,32 @@
 
 package com.example.corpalivapp.data.repository
 
-import com.example.corpalivapp.R
-import com.example.corpalivapp.data.dao.HistoriaExitoDao
 import com.example.corpalivapp.data.model.HistoriaExito
-import kotlinx.coroutines.flow.Flow
+import com.example.corpalivapp.data.remote.ApiService
+import com.example.corpalivapp.data.remote.RetrofitInstance
+import com.example.corpalivapp.data.remote.toDto
+import com.example.corpalivapp.data.remote.toModel
 
+// Las historias viven en el backend (historia-service).
 class HistoriasRepository(
-    private val historiaExitoDao: HistoriaExitoDao
+    private val api: ApiService = RetrofitInstance.api
 ) {
 
-    fun obtenerHistorias(): Flow<List<HistoriaExito>> {
-        return historiaExitoDao.obtenerHistorias()
+    // Es publico: se pueden ver las historias sin iniciar sesion.
+    suspend fun obtenerHistorias(): List<HistoriaExito> =
+        api.getHistorias().map { it.toModel() }
+
+    // Crear, editar y eliminar requieren sesion iniciada.
+    // imagenBase64: null = no cambiar la imagen que ya tiene la historia.
+    suspend fun agregar(historia: HistoriaExito, imagenBase64: String?) {
+        api.crearHistoria(historia.toDto(imagenBase64))
     }
 
-    suspend fun inicializarHistoriasSiVacias() {
-        if (historiaExitoDao.contarHistorias() == 0) {
-            historiaExitoDao.agregar(
-                HistoriaExito(
-                    titulo = "Tests historia 1",
-                    subtitulo = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    imagen = R.drawable.placeholder,
-                    texto = "attis nec leo in, posuere tristique justo. Integer sollicitudin " +
-                            "ipsum et ex eleifend, malesuada lacinia lectus interdum. Nam at lorem " +
-                            "sapien. Mauris vel pharetra arcu. Nam quis posuere purus, ac laoreet turpis."
-                )
-            )
-
-            historiaExitoDao.agregar(
-                HistoriaExito(
-                    titulo = "Tests historia 2",
-                    subtitulo = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    imagen = R.drawable.placeholder,
-                    texto = "attis nec leo in, posuere tristique justo. Integer sollicitudin " +
-                            "ipsum et ex eleifend, malesuada lacinia lectus interdum. Nam at lorem " +
-                            "sapien. Mauris vel pharetra arcu. Nam quis posuere purus, ac laoreet turpis."
-                )
-            )
-
-            historiaExitoDao.agregar(
-                HistoriaExito(
-                    titulo = "Tests historia 3",
-                    subtitulo = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                    imagen = R.drawable.placeholder,
-                    texto = "attis nec leo in, posuere tristique justo. Integer sollicitudin " +
-                            "ipsum et ex eleifend, malesuada lacinia lectus interdum. Nam at lorem " +
-                            "sapien. Mauris vel pharetra arcu. Nam quis posuere purus, ac laoreet turpis."
-                )
-            )
-        }
-    }
-
-    suspend fun agregar(historia: HistoriaExito) {
-        historiaExitoDao.agregar(historia)
-    }
-
-    suspend fun actualizar(historia: HistoriaExito) {
-        historiaExitoDao.actualizar(historia)
+    suspend fun actualizar(historia: HistoriaExito, imagenBase64: String?) {
+        api.actualizarHistoria(historia.id, historia.toDto(imagenBase64))
     }
 
     suspend fun eliminar(id: Int) {
-        historiaExitoDao.eliminar(id)
+        api.eliminarHistoria(id)
     }
 }

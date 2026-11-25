@@ -22,6 +22,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,12 @@ fun AdmColaboracionesScreen(
     viewModel: ColaboracionViewModel
 ) {
     val colaboraciones by viewModel.colaboraciones.collectAsState()
+    val errorLista by viewModel.errorLista.collectAsState()
+
+    // La lista viene del backend y requiere sesion: se descarga al abrir esta pantalla.
+    LaunchedEffect(Unit) {
+        viewModel.cargar()
+    }
 
     var idBuscado by remember {
         mutableStateOf("")
@@ -78,6 +85,14 @@ fun AdmColaboracionesScreen(
             text = "Registros encontrados: ${colaboracionesFiltradas.size}",
             style = MaterialTheme.typography.bodyMedium
         )
+
+        errorLista?.let {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
 
         Spacer(modifier = Modifier.height(12.dp))
 

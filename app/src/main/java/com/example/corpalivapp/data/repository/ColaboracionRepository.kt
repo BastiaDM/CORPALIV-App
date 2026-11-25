@@ -1,72 +1,22 @@
 
 package com.example.corpalivapp.data.repository
 
-import com.example.corpalivapp.data.dao.ColaboracionDao
 import com.example.corpalivapp.data.model.Colaboracion
-import kotlinx.coroutines.flow.Flow
+import com.example.corpalivapp.data.remote.ApiService
+import com.example.corpalivapp.data.remote.RetrofitInstance
 
+// Las colaboraciones viven en el backend (colaboracion-service).
 class ColaboracionRepository(
-    private val colaboracionDao: ColaboracionDao
+    private val api: ApiService = RetrofitInstance.api
 ) {
-    fun observarTodas(): Flow<List<Colaboracion>> =
-        colaboracionDao.observarTodas()
+    // Requiere sesion iniciada (contiene datos personales).
+    suspend fun obtenerTodas(): List<Colaboracion> =
+        api.getColaboraciones()
 
-    suspend fun insertar(colaboracion: Colaboracion) =
-        colaboracionDao.insertar(colaboracion)
+    // Es publico: cualquier persona puede enviar el formulario.
+    suspend fun insertar(colaboracion: Colaboracion): Colaboracion =
+        api.crearColaboracion(colaboracion)
 
     suspend fun eliminar(colaboracion: Colaboracion) =
-        colaboracionDao.eliminar(colaboracion)
-
-    suspend fun inicializarColaboracionesSiVacias() {
-        if (colaboracionDao.contarColaboraciones() == 0) {
-
-            val colaboracionesPrueba = listOf(
-                Colaboracion(
-                    tipoColaborador = "Persona",
-                    nombre = "Ana",
-                    apellidos = "Perez",
-                    rut = "11.111.111-1",
-                    edad = 25,
-                    correo = "ana.prueba@example.com",
-                    telefono = "900000001",
-                    programa = "Programa de Inclusión Laboral",
-                    tipoDonacion = "Única",
-                    monto = 5000,
-                    medioPago = "Transferencia"
-                ),
-
-                Colaboracion(
-                    tipoColaborador = "Persona",
-                    nombre = "Carlos",
-                    apellidos = "Soto",
-                    rut = "12.345.678-5",
-                    edad = 32,
-                    correo = "carlos.prueba@example.com",
-                    telefono = "900000002",
-                    programa = "Taller Sociolaboral",
-                    tipoDonacion = "Mensual",
-                    monto = 10000,
-                    medioPago = "Por definir"
-                ),
-
-                Colaboracion(
-                    tipoColaborador = "Empresa",
-                    nombre = "Empresa Demo",
-                    rut = "76.123.456-K",
-                    razonSocial = "Empresa Demo SpA",
-                    nombreContacto = "Contacto de prueba",
-                    correo = "empresa.prueba@example.com",
-                    telefono = "900000003",
-                    programa = "Taller Sociolaboral",
-                    tipoDonacion = "Única",
-                    monto = 20000,
-                    medioPago = "Transferencia"
-                )
-            )
-
-            colaboracionesPrueba.forEach { colaboracion ->
-                colaboracionDao.insertar(colaboracion)
-            }
-        }
-    }
+        api.eliminarColaboracion(colaboracion.id)
 }

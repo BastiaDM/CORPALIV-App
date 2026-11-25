@@ -1,20 +1,23 @@
 package com.example.corpalivapp.data.model
 
 import android.net.Uri
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
-import com.example.corpalivapp.data.UriTypeConverter
+import com.example.corpalivapp.R
 
-@Entity(tableName = "historias_exito")
-@TypeConverters(UriTypeConverter::class)
+// Modelo que usa la interfaz. En el backend se guarda como HistoriaDto (ver data/remote/Dtos.kt).
 data class HistoriaExito(
-    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
     val titulo: String,
     val subtitulo: String,
-    val imagen: Int,
+
+    // Imagen por defecto cuando la historia no tiene foto.
+    val imagen: Int = R.drawable.placeholder,
+
     val texto: String,
-    val imagenUri: Uri? = null
+
+    // Foto recien elegida (galeria/camara) que todavia no se ha enviado al servidor.
+    val imagenUri: Uri? = null,
+
+    // Foto que ya esta guardada en el servidor (JPEG en Base64).
+    val imagenBase64: String? = null
 )

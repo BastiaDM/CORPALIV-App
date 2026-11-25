@@ -1,12 +1,9 @@
 
 package com.example.corpalivapp.data.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-
-@Entity(tableName = "colaboraciones")
+// Ahora se guarda en el backend (colaboracion-service). Los nombres de los campos
+// coinciden con el JSON del servidor. El servidor asigna "id" y "fechaRegistro".
 data class Colaboracion(
-    @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
 
     val tipoColaborador: String,

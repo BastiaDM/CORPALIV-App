@@ -15,7 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import com.example.corpalivapp.ui.components.AppDrawer
 import com.example.corpalivapp.ui.components.AppTopBar
 import com.example.corpalivapp.ui.screens.HomeScreen
@@ -34,8 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-import com.example.corpalivapp.data.AppDataBase
-import com.example.corpalivapp.data.repository.UsuarioRepository
 import com.example.corpalivapp.viewmodel.UsuarioViewModel
 
 
@@ -46,16 +43,6 @@ fun App() {
     var pantallaActual by remember {
         mutableStateOf("Home")
     }
-    val context = LocalContext.current
-
-    val database = remember {
-        AppDataBase.getInstance(context)
-    }
-
-    val usuarioRepository = remember {
-        UsuarioRepository(database.usuarioDao())
-    }
-
     val colaboracionViewModel: ColaboracionViewModel = viewModel(
         factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(
@@ -64,7 +51,7 @@ fun App() {
                 if (modelClass.isAssignableFrom(ColaboracionViewModel::class.java)) {
                     @Suppress("UNCHECKED_CAST")
                     return ColaboracionViewModel(
-                        ColaboracionRepository(database.colaboracionDao())
+                        ColaboracionRepository()
                     ) as T
                 }
 

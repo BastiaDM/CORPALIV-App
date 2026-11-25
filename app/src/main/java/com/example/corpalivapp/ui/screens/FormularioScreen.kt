@@ -1,6 +1,7 @@
 
 package com.example.corpalivapp.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,7 +48,6 @@ fun FormularioScreen(
     viewModel: ColaboracionViewModel
 ) {
     var tipoColaborador by remember { mutableStateOf("") }
-
     var nombre by remember { mutableStateOf("") }
     var apellidos by remember { mutableStateOf("") }
     var rut by remember { mutableStateOf("") }
@@ -227,7 +227,6 @@ fun FormularioScreen(
         }
 
         SeccionFormulario(titulo = "4. Detalles de la donación") {
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -331,7 +330,7 @@ fun FormularioScreen(
                     apellidos = apellidos.trim(),
                     rut = rut.trim(),
                     edad = if (tipoColaborador == "Persona") {
-                        edad.toIntOrNull()
+                        edad.trim().toIntOrNull()
                     } else {
                         null
                     },
