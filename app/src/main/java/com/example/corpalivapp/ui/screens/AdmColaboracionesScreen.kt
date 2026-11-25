@@ -45,7 +45,6 @@ fun AdmColaboracionesScreen(
     val colaboraciones by viewModel.colaboraciones.collectAsState()
     val errorLista by viewModel.errorLista.collectAsState()
 
-    // La lista viene del backend y requiere sesion: se descarga al abrir esta pantalla.
     LaunchedEffect(Unit) {
         viewModel.cargar()
     }
@@ -58,8 +57,6 @@ fun AdmColaboracionesScreen(
         mutableStateOf<Colaboracion?>(null)
     }
 
-    // Filtra las colaboraciones según el ID escrito.
-    // Permite coincidencias parciales mientras se escribe.
     val colaboracionesFiltradas = if (idBuscado.isBlank()) {
         colaboraciones
     } else {
@@ -162,7 +159,6 @@ fun AdmColaboracionesScreen(
         }
     }
 
-    // Diálogo de confirmación antes de eliminar.
     if (colaboracionSeleccionada != null) {
         AlertDialog(
             onDismissRequest = {

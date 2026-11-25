@@ -1,8 +1,6 @@
 
 package com.example.corpalivapp.data.model
 
-// Ahora se guarda en el backend (colaboracion-service). Los nombres de los campos
-// coinciden con el JSON del servidor. El servidor asigna "id" y "fechaRegistro".
 data class Colaboracion(
     val id: Int = 0,
 

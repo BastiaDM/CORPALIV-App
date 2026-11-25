@@ -4,7 +4,6 @@ import com.google.gson.JsonParser
 import java.io.IOException
 import retrofit2.HttpException
 
-// Convierte cualquier error de red/servidor en un mensaje para mostrar al usuario.
 fun Throwable.mensajeUsuario(): String = when (this) {
     is HttpException -> when (code()) {
         401, 403 -> "Debes iniciar sesión (pestaña Usuario) para realizar esta acción."
@@ -18,7 +17,6 @@ fun Throwable.mensajeUsuario(): String = when (this) {
     else -> "Ocurrió un error inesperado."
 }
 
-// El backend responde errores como { "message": "..." }.
 private fun HttpException.mensajeDelServidor(): String? {
     return try {
         val cuerpo = response()?.errorBody()?.string()

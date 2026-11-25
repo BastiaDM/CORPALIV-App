@@ -29,7 +29,6 @@ fun ImagenInteligente(
     historia: HistoriaExito?,
     modifier: Modifier = Modifier
 ) {
-    // Decodifica en segundo plano la imagen que viene del servidor (Base64).
     val imagenServidor by produceState<ImageBitmap?>(
         initialValue = null,
         key1 = historia?.imagenBase64
@@ -59,7 +58,6 @@ fun ImagenInteligente(
         val bitmap = imagenServidor
 
         if (historia?.imagenUri != null) {
-            // Foto recien elegida, todavia no enviada al servidor.
             AsyncImage(
                 model = historia.imagenUri,
                 contentDescription = "Imagen de la historia",

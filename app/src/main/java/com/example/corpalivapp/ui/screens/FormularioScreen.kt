@@ -1,7 +1,6 @@
 
 package com.example.corpalivapp.ui.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -187,16 +186,7 @@ fun FormularioScreen(
                 }
             }
 
-            CampoFormulario(
-                etiqueta = "Correo electrónico",
-                valor = correo,
-                tipo = KeyboardType.Email,
-                error = errores.correo,
-                mostrarErrores = intentoRegistrar
-            ) {
-                correo = it
-                viewModel.validarCampo("correo", it)
-            }
+
 
             CampoFormulario(
                 etiqueta = "Teléfono (opcional)",
@@ -207,6 +197,18 @@ fun FormularioScreen(
             ) {
                 telefono = it
                 viewModel.validarCampo("telefono", it)
+            }
+
+
+            CampoFormulario(
+                etiqueta = "Correo electrónico",
+                valor = correo,
+                tipo = KeyboardType.Email,
+                error = errores.correo,
+                mostrarErrores = intentoRegistrar
+            ) {
+                correo = it
+                viewModel.validarCampo("correo", it)
             }
         }
 

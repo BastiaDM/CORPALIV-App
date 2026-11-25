@@ -3,8 +3,7 @@ package com.example.corpalivapp.data.security
 import android.content.Context
 import android.content.SharedPreferences
 
-// Guarda el JWT que entrega el backend al iniciar sesion.
-// Se inicializa una vez en MainActivity.onCreate().
+
 object SessionManager {
 
     private const val PREFS = "corpaliv_session"

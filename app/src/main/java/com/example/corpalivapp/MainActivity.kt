@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Prepara el almacenamiento del token JWT (login contra el backend).
         SessionManager.init(applicationContext)
 
         setContent {

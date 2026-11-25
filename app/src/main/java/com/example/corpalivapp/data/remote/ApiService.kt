@@ -10,14 +10,12 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    // ---------- auth-service ----------
     @POST("auth/register")
     suspend fun register(@Body body: AuthRequest): AuthResponse
 
     @POST("auth/login")
     suspend fun login(@Body body: AuthRequest): AuthResponse
 
-    // ---------- historia-service ----------
     @GET("historias")
     suspend fun getHistorias(): List<HistoriaDto>
 
@@ -33,7 +31,6 @@ interface ApiService {
     @DELETE("historias/{id}")
     suspend fun eliminarHistoria(@Path("id") id: Int)
 
-    // ---------- colaboracion-service ----------
     @GET("colaboraciones")
     suspend fun getColaboraciones(): List<Colaboracion>
 

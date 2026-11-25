@@ -7,7 +7,6 @@ import com.example.corpalivapp.data.remote.mensajeUsuario
 import com.example.corpalivapp.data.security.SessionManager
 import kotlin.coroutines.cancellation.CancellationException
 
-// Registro e inicio de sesion contra auth-service. El hash de la contrasena lo hace el servidor.
 class UsuarioRepository(
     private val api: ApiService = RetrofitInstance.api
 ) {
