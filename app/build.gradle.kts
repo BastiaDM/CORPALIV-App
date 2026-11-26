@@ -56,9 +56,9 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Red: Retrofit + Gson (igual que la guia "Consumiendo una API Rest")
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
-    // Se declara OkHttp 4.x de forma explicita para usar su API de Kotlin (request.url, response.code)
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
 }

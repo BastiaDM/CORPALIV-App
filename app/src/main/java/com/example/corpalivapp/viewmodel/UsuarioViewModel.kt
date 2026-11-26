@@ -23,11 +23,10 @@ data class UsuarioErrores(
     val password: String? = null
 )
 
-class UsuarioViewModel(
-    application: Application
+class UsuarioViewModel @JvmOverloads constructor(
+    application: Application,
+    private val repositorio: UsuarioRepository = UsuarioRepository()
 ) : AndroidViewModel(application) {
-
-    private val repositorio = UsuarioRepository()
 
     private val _email = MutableStateFlow("")
     val email = _email.asStateFlow()
@@ -96,12 +95,10 @@ class UsuarioViewModel(
             _progreso.value = 99f
 
             try {
-                val resultado = withContext(Dispatchers.IO) {
-                    if (esRegistro) {
-                        repositorio.register(correo, clave)
-                    } else {
-                        repositorio.login(correo, clave)
-                    }
+                val resultado = if (esRegistro) {
+                    repositorio.register(correo, clave)
+                } else {
+                    repositorio.login(correo, clave)
                 }
 
                 resultado.fold(

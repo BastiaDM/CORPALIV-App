@@ -29,11 +29,10 @@ data class ErroresHistoria(
                 texto == null
 }
 
-class HistoriasViewModel(
-    application: Application
+class HistoriasViewModel @JvmOverloads constructor(
+    application: Application,
+    private val repository: HistoriasRepository = HistoriasRepository()
 ) : AndroidViewModel(application) {
-
-    private val repository = HistoriasRepository()
 
     private val _historias = MutableStateFlow<List<HistoriaExito>>(emptyList())
     val historias: StateFlow<List<HistoriaExito>> = _historias.asStateFlow()

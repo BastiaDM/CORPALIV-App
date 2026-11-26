@@ -1,7 +1,6 @@
 
 package com.example.corpalivapp.viewmodel
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.corpalivapp.data.model.Colaboracion
@@ -51,6 +50,7 @@ class ColaboracionViewModel(
     val errores: StateFlow<ColaboracionErrores> =
         _errores.asStateFlow()
 
+    private val EMAIL_REGEX = Regex("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$")
     private val programasValidos = listOf(
         "Programa de Inclusión Laboral",
         "Taller Sociolaboral"
@@ -243,7 +243,7 @@ class ColaboracionViewModel(
     private fun validarCorreo(valor: String): String? {
         return when {
             valor.isBlank() -> "El correo electrónico es obligatorio."
-            !Patterns.EMAIL_ADDRESS.matcher(valor.trim()).matches() ->
+            !EMAIL_REGEX.matches(valor.trim()) ->
                 "Ingresa un correo electrónico válido."
             else -> null
         }
@@ -369,9 +369,7 @@ class ColaboracionViewModel(
 
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    repository.insertar(colaboracion)
-                }
+                repository.insertar(colaboracion)
 
                 _mensaje.value = "Colaboración registrada correctamente."
                 _errores.value = ColaboracionErrores()
@@ -386,9 +384,7 @@ class ColaboracionViewModel(
     fun eliminar(colaboracion: Colaboracion) {
         viewModelScope.launch {
             try {
-                withContext(Dispatchers.IO) {
-                    repository.eliminar(colaboracion)
-                }
+                repository.eliminar(colaboracion)
 
                 _mensaje.value = "Colaboración eliminada."
                 cargar()
